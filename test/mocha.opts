@@ -1,0 +1,6 @@
+--recursive
+--timeout 20s
+#--watch
+--reporter mochawesome
+--reporter-options reportDir=./test/reporter,reportFilename=mocha,enableCode=false,enableTestCode=false,autoOpen=false,quiet=true
+--require intelli-espower-loader

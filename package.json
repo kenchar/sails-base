@@ -1,0 +1,55 @@
+{
+  "name": "sails-base",
+  "version": "1.0.0",
+  "description": "sails1.0+扩展基础包，包含用户体系权限校验及model的attr，action的inputs入参提示语自定义功能",
+  "keywords": [
+    "sails",
+    "base",
+    "auth",
+    "passport",
+    "violations",
+    "model",
+    "action",
+    "params",
+    "message"
+  ],
+  "dependencies": {
+    "@sailshq/lodash": "^3.10.3",
+    "bcryptjs": "^2.2",
+    "passport": "^0.4.0",
+    "require-all": "^3.0.0",
+    "sails": "^1.2.3",
+    "sails-hook-orm": "^2.1.1",
+    "sails-hook-sockets": "^2.0.0",
+    "sails-hook-violations": "^1.1.0"
+  },
+  "devDependencies": {
+    "eslint": "5.16.0",
+    "intelli-espower-loader": "^1.0.1",
+    "mocha": "^6.2.0",
+    "mochawesome": "^4.0.1",
+    "power-assert": "^1.6.1",
+    "supertest": "^4.0.2"
+  },
+  "scripts": {
+    "test": "node ./node_modules/mocha/bin/mocha test/lifecycle.test.js test/integration/**/*.test.js"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kenchar/sails-base.git"
+  },
+  "author": "kenchar",
+  "license": "MIT",
+  "engines": {
+    "node": "^12.6"
+  },
+  "bugs": {
+    "url": "https://github.com/kenchar/sails-base/issues"
+  },
+  "homepage": "https://github.com/kenchar/sails-base#readme",
+  "sails": {
+    "isHook": true,
+    "hookName": "base"
+  }
+}
