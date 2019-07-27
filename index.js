@@ -6,7 +6,7 @@ module.exports = sails => {
 
   return {
 
-    initialize: cb => {
+    initialize: () => {
 
       sails.after(eventsToWaitFor, () => {
 
@@ -23,8 +23,6 @@ module.exports = sails => {
 
           passport.use(new Strategy(options,obj.callback));
         });
-
-        return cb();
       });
     },
 
@@ -42,7 +40,6 @@ module.exports = sails => {
 
     loadConfig() {
       let configPath = path.resolve(__dirname, './config');
-      sails.log.debug(`loading config from ${configPath}`);
       try {
         let configModules = requireAll({
           dirname: configPath,
@@ -50,7 +47,7 @@ module.exports = sails => {
         });
         let sailsConfig = _.reduce(_.values(configModules), _.merge);
         _.defaultsDeep(sails.config, sailsConfig);
-        sails.log.debug('loaded config...');
+        sails.log.debug(`loaded config from ${configPath}`);
       } catch (e) {
         sails.log.debug(`no configuration found in ${configPath}. Skipping...`);
       }
@@ -58,14 +55,13 @@ module.exports = sails => {
 
     loadModels() {
       let modelPath = path.resolve(__dirname, './api/models');
-      sails.log.debug(`loading Models from ${modelPath}`);
       try {
         let models = requireAll({
           dirname: modelPath,
           filter: /(.+)\.js$/
         });
         this.mergeEntities('models', models);
-        sails.log.debug('loaded models...');
+        sails.log.debug(`loaded Models from ${modelPath}`);
       } catch (e) {
         sails.log.warn(`no Models found in ${modelPath}. Skipping...`);
       }
@@ -73,7 +69,6 @@ module.exports = sails => {
 
     loadPolicies() {
       let policyPath = path.resolve(__dirname, './api/policies');
-      sails.log.debug(`loading Policies from ${policyPath}`);
       try {
         let policies = requireAll({
           dirname: policyPath,
@@ -82,7 +77,7 @@ module.exports = sails => {
         _.extend(sails.hooks.policies.middleware, _.mapKeys(policies, (policy, key) => {
           return key.toLowerCase()
         }));
-        sails.log.debug('loaded policies...');
+        sails.log.debug(`loaded Policies from ${policyPath}`);
       } catch (e) {
         sails.log.warn(`no Policies found in ${policyPath}. Skipping...`);
       }
@@ -91,16 +86,14 @@ module.exports = sails => {
 
     loadActions() {
       let actionPath = path.resolve(__dirname, './api/controllers');
-      sails.log.debug(`loading Actions from ${actionPath}`);
       try {
         let actions = requireAll({
           dirname: actionPath,
           filter: /(.+)\.js$/
         });
         this.registerAction(actions);
-        sails.log.debug('loaded actions...');
+        sails.log.debug(`loaded Actions from ${actionPath}`);
       } catch (e) {
-        sails.log.error(e);
         sails.log.warn(`no Actions found in ${actionPath}. Skipping...`);
       }
     },

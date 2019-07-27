@@ -14,6 +14,15 @@ before(function (done) {
     log: {
       level: 'info'
     },
+    globals: {
+      _: require('@sailshq/lodash'),
+      async: false,
+      models: true,
+      sails: true,
+    },
+    session: {
+      secret: 'a3485661eb03569b92a62871a3efd978'
+    },
     hooks: {
       grunt: false,
       //views: false,

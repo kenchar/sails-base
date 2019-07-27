@@ -1,9 +1,0 @@
-{
-	"user.username.required": "user.username.required",
-	"user/register.js.identifier.isBoolean": "user/register.js.identifier.isBoolean",
-	"user/register.js.password.required": "user/register.js.password.required",
-	"user/register.js.identifier.required": "user/register.js.identifier.required",
-	"user/register.js.password.minLength": "user/register.js.password.minLength",
-	"user.email.isEmail": "user.email.isEmail",
-	"businessError.SessionError.message": "businessError.SessionError.message"
-}
