@@ -33,11 +33,11 @@ module.exports = sails => {
           return cb(err);
         }
 
-        // Mix in the built-in default definitions for custom responses.
-        _.defaults(responseDefs,sails.hooks.responses.middleware, {
+        _.extend(sails.hooks.responses.middleware, {
           serverError: require(path.resolve(responsePath,'serverError')),
           forbidden: require(path.resolve(responsePath,'forbidden'))
         });
+        _.defaults(responseDefs,sails.hooks.responses.middleware);
 
         sails.hooks.responses.middleware = responseDefs;
         sails.log.debug(`loaded responses from ${responsePath}`);
