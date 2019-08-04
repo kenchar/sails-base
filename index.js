@@ -15,14 +15,33 @@ module.exports = sails => {
         _.each(strategies, (obj, key) => {
           let options = {
             passReqToCallback: true,
-            callbackURL: '/auth/'+key+'/callback'
+            callbackURL: '/auth/' + key + '/callback'
           };
           let Strategy = obj.strategy;
 
           _.extend(options, obj.options);
 
-          passport.use(new Strategy(options,obj.callback));
+          passport.use(new Strategy(options, obj.callback));
         });
+      });
+    },
+
+    loadModules: function (cb) {
+      let responsePath = path.resolve(__dirname, './api/responses');
+      sails.modules.loadResponses(function loadedRuntimeErrorModules(err, responseDefs) {
+        if (err) {
+          return cb(err);
+        }
+
+        // Mix in the built-in default definitions for custom responses.
+        _.defaults(responseDefs,sails.hooks.responses.middleware, {
+          serverError: require(path.resolve(responsePath,'serverError')),
+          forbidden: require(path.resolve(responsePath,'forbidden'))
+        });
+
+        sails.hooks.responses.middleware = responseDefs;
+        sails.log.debug(`loaded responses from ${responsePath}`);
+        return cb();
       });
     },
 
@@ -32,7 +51,6 @@ module.exports = sails => {
 
     configure() {
       this.loadConfig();
-      //this.loadHelpers();
       this.loadModels();
       this.loadActions();
       this.loadPolicies();
@@ -98,10 +116,6 @@ module.exports = sails => {
       }
     },
 
-    loadHelpers() {
-
-    },
-
     //注入到sails环境内
     mergeEntities(namespace, entities) {
 
@@ -123,14 +137,14 @@ module.exports = sails => {
     },
 
     //注册action到sails
-    registerAction (actions,parentActionPath){
+    registerAction(actions, parentActionPath) {
       let that = this;
-      _.each(actions, (action,key) => {
-        if(_.has(action,'friendlyName')) {
-          sails.registerAction(action,path.join(parentActionPath||'',key));
+      _.each(actions, (action, key) => {
+        if (_.has(action, 'friendlyName')) {
+          sails.registerAction(action, path.join(parentActionPath || '', key));
           return;
         }
-        that.registerAction(_.mapValues(action),path.join(parentActionPath||'',key));
+        that.registerAction(_.mapValues(action), path.join(parentActionPath || '', key));
       });
     }
 
