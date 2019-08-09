@@ -7,9 +7,11 @@
 module.exports = async function (req, res, proceed) {
 
   let modelId = req.param('id');
-  let modelName = req.options.model || req.options.controller;
+  let modelName;
+  if(_.has(req.options,'action')) modelName = req.options.action.split('/')[0];
+  else modelName = req.options.model || req.options.controller;
 
-  if (_.isEmpty(modelId)) return res.forbidden(new NullError());
+  if (!modelName || _.isEmpty(modelId)) return res.forbidden(new NullError());
 
   if (req.model
     && _.isEqual(req.model.id, modelId)) {

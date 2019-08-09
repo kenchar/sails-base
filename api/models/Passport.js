@@ -48,7 +48,7 @@ module.exports = {
     }
   },
 
-  toJSON: function(){
+  customToJSON: function(){
     return _.omit(this,['password']);
   },
 

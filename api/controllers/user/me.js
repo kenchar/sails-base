@@ -18,7 +18,7 @@ module.exports = {
     let passport = await Passport.findOne(this.req.session.passport.id)
       .populate('user');
 
-    return exits.success(_.omit(passport, ['password']));
+    return exits.success(passport);
 
   }
 
