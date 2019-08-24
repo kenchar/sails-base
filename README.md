@@ -52,9 +52,9 @@ _.merge(exports, {
 ### 第三方授权登录
 * 引入第三方passport
 ``` sh
-npm install passport-wechat --save
+npm install passport-wechat-api --save
 ```
-* 引入第三方配置信息，如passport-wechat配置如下：
+* 引入第三方配置信息，如passport-wechat-api([微信开发平台/小程序登录](https://github.com/kenchar/passport-wechat-api) )配置如下：
 ```js
 module.exports.custom = {
   
@@ -62,12 +62,35 @@ module.exports.custom = {
     wechat: {
       name: 'wechat',
       protocol: 'oauth',
-      strategy: require('passport-wechat').Strategy,
+      strategy: require('passport-wechat-api').Strategy,
       options: {
         appID: 'wx7b........',
         appSecret: 'bd4f8.........'
+      },
+      callback: async function (req, accessToken, refreshToken, profile, result, done) {
+        try {
+          //重要步骤，用于存储用户授权登录信息
+          let passport = await sails.helpers.passportUserRefBuild.with({
+            protocol: 'oauth',
+            provider: 'wechat',
+            accessToken: accessToken,
+            identifier: profile.openid,
+          });
+          sails.log.error(passport);
+          done(null, passport);
+        } catch (e) {
+          done(e.message);
+        }
       }
-    }   
+    },
+    miniProgram: {
+      name: 'miniProgram',
+      ...
+      options: {
+        ...
+        isMiniProgram: true
+      }
+    } 
   }
  
 }

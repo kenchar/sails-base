@@ -2,6 +2,7 @@ const requireAll = require('require-all');
 const path = require('path');
 const eventsToWaitFor = ['hook:orm:loaded'];
 const passport = require('passport');
+const loadHelpers = require('./lib/load-helpers');
 module.exports = sails => {
 
   return {
@@ -34,10 +35,10 @@ module.exports = sails => {
         }
 
         _.extend(sails.hooks.responses.middleware, {
-          serverError: require(path.resolve(responsePath,'serverError')),
-          forbidden: require(path.resolve(responsePath,'forbidden'))
+          serverError: require(path.resolve(responsePath, 'serverError')),
+          forbidden: require(path.resolve(responsePath, 'forbidden'))
         });
-        _.defaults(responseDefs,sails.hooks.responses.middleware);
+        _.defaults(responseDefs, sails.hooks.responses.middleware);
 
         sails.hooks.responses.middleware = responseDefs;
         sails.log.debug(`loaded responses from ${responsePath}`);
@@ -54,6 +55,7 @@ module.exports = sails => {
       this.loadModels();
       this.loadActions();
       this.loadPolicies();
+      this.loadHelpers();
     },
 
     loadConfig() {
@@ -114,6 +116,13 @@ module.exports = sails => {
       } catch (e) {
         sails.log.warn(`no Actions found in ${actionPath}. Skipping...`);
       }
+    },
+
+    loadHelpers() {
+      let helpersPath = path.resolve(__dirname, './api/helpers');
+      loadHelpers(sails, helpersPath, function (err) {
+        sails.log.debug(`loaded helpers from ${helpersPath}.`);
+      });
     },
 
     //注入到sails环境内

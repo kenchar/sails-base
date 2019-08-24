@@ -57,7 +57,7 @@ module.exports = {
     };
 
     return require('passport').authenticate(provider, function (err, passport, info) {
-      if (err) exits.error(err);
+      if (err) return exits.error(_.isError(err) ? err : new Error(err));
       that.req.session.passport = passport;
       that.req.session.authenticated = true;
       return exits.success({
