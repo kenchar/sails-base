@@ -8,7 +8,7 @@ module.exports = async function (req, res, proceed) {
 
   if(req.session
     && req.session.authenticated
-    && _.has(req.ression,'passport')) return proceed();
+    && _.has(req.session,'passport')) return proceed();
 
   if(_.isEmpty(req.headers.cookie)) return res.forbidden(new SessionError());
 
