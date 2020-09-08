@@ -6,6 +6,8 @@
  */
 module.exports = async function (req, res, proceed) {
 
+  sails.log.debug(`${req.method} ${req.url} 【is-model-owner】`);
+
   if(!req.session
     || !req.session.authenticated
     || !_.has(req.session,'passport')){
@@ -32,7 +34,7 @@ module.exports = async function (req, res, proceed) {
 
   if (model) {
     req.model = model;
-    let ownerId = _.has(model.user, 'id') ? model.user.id : model.user;
+    let ownerId = _.has(model.createdBy, 'id') ? model.createdBy.id : model.createdBy;
     if (_.isEqual(ownerId, userId)) return proceed();
     return res.forbidden(new PermissionError());
   }

@@ -6,6 +6,8 @@
  */
 module.exports = async function (req, res, proceed) {
 
+  sails.log.debug(`${req.method} ${req.url} 【is-model-found】`);
+
   let modelId = req.param('id');
   let modelName;
   if(_.has(req.options,'action')) modelName = req.options.action.split('/')[0];
