@@ -14,8 +14,7 @@ $ npm install --save sails-base sails-hook-violations
 ``` js
 var _super = require('sails-base/api/models/User');
 
-_.merge(exports, _super);
-_.merge(exports, {
+_.merge(exports, _super, {
 
 });
 
@@ -24,8 +23,7 @@ _.merge(exports, {
 ``` js
 var _super = require('sails-base/api/models/Passport');
 
-_.merge(exports, _super);
-_.merge(exports, {
+_.merge(exports, _super, {
 
 });
 
@@ -57,7 +55,7 @@ npm install passport-wechat-api --save
 * 引入第三方配置信息，如passport-wechat-api([微信开发平台/小程序登录](https://github.com/kenchar/passport-wechat-api) )配置如下：
 ```js
 module.exports.custom = {
-  
+
   passport: {
     wechat: {
       name: 'wechat',
@@ -90,9 +88,9 @@ module.exports.custom = {
         ...
         isMiniProgram: true
       }
-    } 
+    }
   }
- 
+
 }
 ```
 * 授权登录
@@ -105,6 +103,24 @@ get /auth/wechat?code=xxx
 + 参考[attributes/inputs的入参校验提示语自定义](https://github.com/kenchar/sails-hook-violations)
 
 
+### action自动填充创建/更新人信息
+#### config/policies.js
+```js
+'story/create': ['is-logged-in','set-create-or-update-user']
+```
+
+#### api/controllers/story/create
+```js
+const _super = require('sails-base/api/controllers/base-action');
+
+_.merge(exports, _super, {
+    friendlyName: 'create',
+    descripiton: 'create story',
+    inputs: {},
+    ...
+});
+```
+
 ## Licence
 
 The MIT License (MIT)
@@ -115,4 +131,4 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
