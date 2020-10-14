@@ -1,6 +1,6 @@
 {
   "name": "sails-base",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "sails1.0+扩展基础包，包含用户体系权限校验及model的attr，action的inputs入参提示语自定义功能",
   "keywords": [
     "sails",
