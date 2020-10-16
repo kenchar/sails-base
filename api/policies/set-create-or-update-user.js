@@ -6,8 +6,6 @@
  */
 module.exports = async function (req, res, proceed) {
 
-  sails.log.debug(`${req.method} ${req.url} 【set-create-or-update-user】`);
-
   if (_.isEqual(req.method, 'POST')
     || _.isEqual(req.method, 'PUT')
     || _.isEqual(req.method, 'DELETE')) {

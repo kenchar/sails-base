@@ -1,8 +1,9 @@
 const requireAll = require('require-all');
 const path = require('path');
-const eventsToWaitFor = ['hook:orm:loaded'];
+const eventsToWaitFor = ['hook:orm:loaded', 'hook:pubsub:loaded'];
 const passport = require('passport');
 const loadHelpers = require('./lib/load-helpers');
+const chalk = require('chalk');
 module.exports = sails => {
 
   return {
@@ -10,7 +11,6 @@ module.exports = sails => {
     initialize: () => {
 
       sails.after(eventsToWaitFor, () => {
-
         let strategies = sails.config.custom.passport;
 
         _.each(strategies, (obj, key) => {
@@ -36,7 +36,7 @@ module.exports = sails => {
 
         _.extend(sails.hooks.responses.middleware, {
           serverError: require(path.resolve(responsePath, 'serverError')),
-          forbidden: require(path.resolve(responsePath, 'forbidden'))
+          forbidden: require(path.resolve(responsePath, 'forbidden')),
         });
         _.defaults(responseDefs, sails.hooks.responses.middleware);
 
@@ -47,7 +47,40 @@ module.exports = sails => {
     },
 
     routes: {
-      before: {}
+      before: {
+        'all /*': function (req, res, next) {
+          //打印请求信息
+          if (sails.config.http.params.debug) {
+            sails.log.debug(chalk.grey(Array(56).join('>')));
+            sails.log.debug(chalk.grey(`:: ${new Date()}`));
+            sails.log.debug(`${chalk.grey(req.method)} ${req.url}`);
+            let params = _.omit(req.allParams(), ['0']);
+            if (req.session && req.session.passport) {
+              _.extend(params, {
+                userId: req.session.passport.user
+              });
+            }
+            sails.log.debug(chalk.grey('Request Datas') + '\n' + JSON.stringify(params));
+          }
+          //打印返回信
+          if (sails.config.http.params.debug) {
+            let sendFn = res.send;
+            res.send = function (body) {
+              sendFn.apply(res, Array.prototype.slice.call(arguments));
+              if (_.isObject(body)) {
+                if (!_.isNull(body) && !Buffer.isBuffer(body)) {
+                  return;
+                }
+              }
+              sails.log.debug(chalk.grey('Response status') + ' ' + res.statusCode);
+              sails.log.debug(chalk.grey('Response Datas') + '\n' + body);
+              sails.log.debug(chalk.grey(`:: ${new Date()}`));
+              sails.log.debug(chalk.grey(Array(56).join('<')));
+            };
+          }
+          return next();
+        }
+      },
     },
 
     configure() {
@@ -95,7 +128,7 @@ module.exports = sails => {
           filter: /(.+)\.js$/
         });
         _.extend(sails.hooks.policies.middleware, _.mapKeys(policies, (policy, key) => {
-          return key.toLowerCase()
+          return key.toLowerCase();
         }));
         sails.log.debug(`loaded Policies from ${policyPath}`);
       } catch (e) {
@@ -134,12 +167,12 @@ module.exports = sails => {
             return _.defaults(entity, {
               globalId: key,
               identity: key.toLowerCase()
-            })
+            });
           })
           .mapKeys((entity, key) => {
             return key.toLowerCase();
           })
-          .value()
+          .value();
       }
 
       sails[namespace] = _.merge(sails[namespace] || {}, transformEntities(entities));
@@ -157,7 +190,6 @@ module.exports = sails => {
       });
     }
 
-  }
+  };
 
 };
-

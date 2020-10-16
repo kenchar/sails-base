@@ -6,8 +6,6 @@
  */
 module.exports = async function (req, res, proceed) {
 
-  sails.log.debug(`${req.method} ${req.url} 【is-model-owner】`);
-
   if(!req.session
     || !req.session.authenticated
     || !_.has(req.session,'passport')){

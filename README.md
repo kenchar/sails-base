@@ -102,6 +102,13 @@ get /auth/wechat?code=xxx
 
 + 参考[attributes/inputs的入参校验提示语自定义](https://github.com/kenchar/sails-hook-violations)
 
+### 开启http请求日志
+```js
+  //in config/http.js
+  params: {
+    debug: true //debug模式下，打印请求参数及返回主体
+  }
+```
 
 ### action自动填充创建/更新人信息
 #### config/policies.js

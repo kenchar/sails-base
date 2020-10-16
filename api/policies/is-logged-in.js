@@ -6,8 +6,6 @@
  */
 module.exports = async function (req, res, proceed) {
 
-  sails.log.debug(`${req.method} ${req.url} 【is-logged-in】`);
-
   if(req.session
     && req.session.authenticated
     && _.has(req.session,'passport')) return proceed();
@@ -19,7 +17,7 @@ module.exports = async function (req, res, proceed) {
   if(_.isEmpty(sessionId)) return res.forbidden(new SessionError());
 
   sails.session.get(sessionId,function(err,session){
-    if(_.isNull(session) || _.isUndefined(session)) return res.forbidden(new SessionError());
+    if(_.isNull(session) || _.isUndefined(session) || _.isUndefined(session.passport)) return res.forbidden(new SessionError());
     req.session.passport = session.passport;
     req.session.authenticated = true;
     return proceed();
