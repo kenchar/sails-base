@@ -50,6 +50,7 @@ module.exports = sails => {
       before: {
         'all /*': function (req, res, next) {
           //打印请求信息
+          let userId = '...';
           if (sails.config.http.params.debug) {
             sails.log.debug(chalk.grey(Array(56).join('>')));
             sails.log.debug(chalk.grey(`:: ${new Date()}`));
@@ -59,8 +60,9 @@ module.exports = sails => {
               _.extend(params, {
                 userId: req.session.passport.user
               });
+              userId = req.session.passport.user;
             }
-            sails.log.debug(chalk.grey('Request Datas') + '\n' + JSON.stringify(params));
+            sails.log.debug(chalk.grey('Request Datas From ') + userId +  '\n' + JSON.stringify(params));
           }
           //打印返回信
           if (sails.config.http.params.debug) {
@@ -73,7 +75,7 @@ module.exports = sails => {
                 }
               }
               sails.log.debug(chalk.grey('Response status') + ' ' + res.statusCode);
-              sails.log.debug(chalk.grey('Response Datas') + '\n' + body);
+              sails.log.debug(chalk.grey('Response Datas To ') + userId + '\n' + body);
               sails.log.debug(chalk.grey(`:: ${new Date()}`));
               sails.log.debug(chalk.grey(Array(56).join('<')));
             };

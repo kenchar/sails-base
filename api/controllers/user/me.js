@@ -15,7 +15,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
 
-    let passport = await Passport.findOne(this.req.session.passport.id)
+    let passport = await Passport.findOne(this.req.session.passport.id || this.req.session.passport._id)
       .populate('user');
 
     return exits.success(passport);
