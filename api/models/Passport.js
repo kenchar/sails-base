@@ -30,6 +30,10 @@ module.exports = {
       description: '身份唯一标识：系统内账号为用户名或者邮箱地址，第三方授权账号为外部系统用户标识',
       required: true
     },
+    unionId: {
+      type: 'string',
+      description: '统一平台ID,多系统统一主体的用户标识',
+    },
     password: {
       type: 'string',
       description: 'local用户加密密码'
@@ -63,7 +67,7 @@ module.exports = {
   beforeUpdate: async function (valuesToSet, proceed) {
     if (_.isEqual('local', valuesToSet.provider)) {
       valuesToSet.password
-        = await sails.helpers.hashPwd(recordToCreate.password);
+        = await sails.helpers.hashPwd(valuesToSet.password);
     }
     return proceed();
   },

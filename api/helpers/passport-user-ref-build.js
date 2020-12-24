@@ -24,21 +24,41 @@ module.exports = {
     identifier: {
       type: 'string',
       description: '身份唯一标识：系统内账号为用户名或者邮箱地址，第三方授权账号为外部系统用户标识',
-      required: true
+    },
+    unionId: {
+      type: 'string',
+      description: '统一平台ID,多系统统一主体的用户标识',
     }
   },
 
 
   exits: {
-
+    paramsError: {
+      description: 'params error.',
+      outputDescription: '必填参数值缺失',
+      responseType: 'serverError'
+    }
   },
 
 
   fn: async function (inputs,exits) {
-     let passport = await Passport.findOne({
-       provider: inputs.provider,
-       identifier: inputs.identifier
-     });
+    let passport;
+    let where = {};
+    if(_.isEmpty(inputs.identifier) && !_.isEmpty(inputs.unionId)){
+      where = {
+        unionId: inputs.unionId
+      };
+    }else if(!_.isEmpty(inputs.identifier)){
+      where = {
+        provider: inputs.provider,
+        identifier: inputs.identifier
+      };
+    }else{
+      throw {
+        paramsError: new Error('参数值有误!')
+      };
+    }
+    passport = await Passport.findOne(where);
     if (passport) {
       passport.accessToken = inputs.accessToken;
       passport.protocol = inputs.protocol;
@@ -53,6 +73,7 @@ module.exports = {
           provider: inputs.provider,
           protocol: inputs.protocol,
           identifier: inputs.identifier,
+          unionId: inputs.unionId,
           accessToken: inputs.accessToken,
           user: user.id
         }).fetch();
